@@ -36,7 +36,7 @@
 * Github
 
 
-# motoki-adachi/担当箇所一覧
+# takehiro-tsukagoshi/担当箇所一覧
 * スクラムマスター
 * デプロイ作業全般
 * DB設計全般
