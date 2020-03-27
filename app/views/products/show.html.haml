@@ -117,15 +117,40 @@
                 %i.fas.fa-flag 不適切な商品の通報
 
     .comment
-      %form.comment__new
-        %textarea.comment__new--text
+      .insert_comment
+        - @product.comments.each do |comment|
+          .seller-message{'data-id'=> comment.id}
+            %ul.seller-message__items
+              %li.seller-message__contents
+                .seller-message__contents__items
+                  - if @product.user_id == comment.user_id
+                    %p.seller-message__contents__items__user--right
+                      #{comment.user.nickname}(出品者)
+                  - else
+                    %p.seller-message__contents__items__user--left
+                      = comment.user.nickname
+                  .seller-message__contents__items__body
+                    .seller-message__contents__items__body--text
+                      = comment.text
+                    .seller-message__contents__items__body--icons
+                      %time.seller-message__contents__items__body--icons--left
+                        %i.fas.fa-clock
+                        %span
+                          = comment.created_at.strftime("%Y年%m月%d日 %H時%M分")
+
+                      - if comment.user_id == current_user.id
+                        .seller-message__contents__items__body--icons--right
+                          .seller-message__contents__items__body--icons--right--delete{'data-product'=> @product.id, 'data-comment'=> comment.id}
+                            %i.fas.fa-trash-alt
+      = form_with model:[@product, @comment], url: "/products/#{@product.id}/comments", method: :post, class: "comment__new", local: true do |f|
+        = f.text_area :text, class: "comment__new--text"
+        = f.hidden_field :product_id, type: "hidden", value: @product.id
+        = f.hidden_field :current_user, type: "hidden", value: @comment.user_id
         %p.comment__new--notes
           相手のことを考え丁寧なコメントを心がけましょう。
           %br>/
           不快な言葉遣いなどは利用制限や退会処分となることがあります。
-        %button.comment__new--submit
-          %i.fas.fa-comment コメントする
-
+        = f.submit :コメントする, class: "comment__new--submit fas fa-comment"
     %ul.link-navi
       %li.link-navi__left
         = link_to "#" do

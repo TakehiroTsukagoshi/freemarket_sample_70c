@@ -27,9 +27,8 @@ class ProductsController < ApplicationController
     @category_grandchildren = Category.find(params[:child_id]).children
   end 
 
-
   def show
-    @product = Product.find(params[:id])
+    @comment = Comment.new
     @parents = Category.where(ancestry: nil)
     @product.images
     @category = @product.category
@@ -52,11 +51,12 @@ class ProductsController < ApplicationController
 
   def update
     
+    
     if @product.user.id != current_user.id
       flash[:alert] = "商品編集の権限がありません"
       redirect_to product_path(@product)
     end
-
+    
     if @product.update(products_params)
       flash[:notice] = '商品の編集が完了しました'
       redirect_to product_path(@product.id)
@@ -71,8 +71,6 @@ class ProductsController < ApplicationController
       @product.destroy
       flash[:notice] = '出品した商品を削除しました'
       redirect_to root_path
-
-      # マイページ完成次第パスをマイページに変更
     else
       flash.now[:alert] = '商品の削除に失敗しました'
       render :edit
